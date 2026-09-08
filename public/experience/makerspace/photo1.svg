@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="280" viewBox="0 0 400 280">
+  <rect width="400" height="280" fill="#f4f3f0"/>
+  <rect x="0.5" y="0.5" width="399" height="279" fill="none" stroke="#dedcd5"/>
+  <g font-family="Georgia, serif" fill="#a3a19a" text-anchor="middle">
+    <text x="200" y="128" font-size="18" letter-spacing="0.5">MakerSpace Internship</text>
+    <text x="200" y="156" font-size="12" letter-spacing="0.4">Drop photo here</text>
+  </g>
+</svg>

@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 const stats = [
   {
     span: 'span-7',
@@ -63,10 +61,6 @@ const chevron = (
 )
 
 export default function Achievements() {
-  const [expanded, setExpanded] = useState(null)
-
-  const toggle = (i) => setExpanded(expanded === i ? null : i)
-
   return (
     <section className="section" id="work">
       <div className="container">
@@ -81,12 +75,10 @@ export default function Achievements() {
           {stats.map((s, i) => (
             <article
               key={s.name}
-              className={`stat-card ${s.span} ${expanded === i ? 'is-open' : ''}`}
+              className={`stat-card ${s.span}`}
             >
               <button
                 className="stat-card-btn"
-                onClick={() => toggle(i)}
-                aria-expanded={expanded === i}
               >
                 <div className="stat-top">
                   <span className="icon-badge" style={{ background: s.badge[0], color: s.badge[1] }}>{s.icon}</span>
@@ -98,13 +90,13 @@ export default function Achievements() {
                   <p className="stat-desc">{s.desc}</p>
                 </div>
                 {s.photos.length > 0 && (
-                  <span className={`stat-expand-icon ${expanded === i ? 'rotated' : ''}`}>
+                  <span className="stat-expand-icon">
                     {chevron}
                   </span>
                 )}
               </button>
               {s.photos.length > 0 && (
-                <div className={`stat-expand ${expanded === i ? 'is-expanded' : ''}`}>
+                <div className="stat-expand">
                   <div className="stat-expand-inner">
                     <div className="stat-photos">
                       {s.photos.map((photo, j) => (

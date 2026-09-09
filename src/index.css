@@ -569,7 +569,8 @@ html[data-theme='dark'] .hero-blob {
   height: 16px;
 }
 
-.stat-expand-icon.rotated {
+.stat-expand-icon.rotated,
+.stat-card:hover .stat-expand-icon {
   transform: rotate(180deg);
 }
 
@@ -581,11 +582,13 @@ html[data-theme='dark'] .hero-blob {
 .stat-expand {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 400ms var(--ease-out);
+  transition: grid-template-rows 400ms var(--ease-out) 150ms;
 }
 
-.stat-expand.is-expanded {
+.stat-expand.is-expanded,
+.stat-card:hover .stat-expand {
   grid-template-rows: 1fr;
+  transition-delay: 0ms;
 }
 
 .stat-expand-inner {
@@ -594,23 +597,35 @@ html[data-theme='dark'] .hero-blob {
   opacity: 0;
   transform: translateY(-4px);
   transition:
-    opacity 300ms ease 60ms,
-    transform 300ms ease 60ms;
+    opacity 300ms ease 210ms,
+    transform 300ms ease 210ms;
 }
 
-.stat-expand.is-expanded .stat-expand-inner {
+.stat-expand.is-expanded .stat-expand-inner,
+.stat-card:hover .stat-expand-inner {
   opacity: 1;
   transform: none;
+  transition-delay: 60ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .stat-expand {
     grid-template-rows: 1fr;
+    transition: none;
   }
-  .stat-expand.is-expanded {
+  .stat-expand.is-expanded,
+  .stat-card:hover .stat-expand {
     grid-template-rows: 1fr;
   }
   .stat-expand-inner {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .stat-expand.is-expanded .stat-expand-inner,
+  .stat-card:hover .stat-expand-inner {
+    opacity: 1;
+    transform: none;
     transition: none;
   }
 }

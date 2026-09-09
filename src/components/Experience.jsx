@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const entries = [
   {
@@ -19,8 +19,14 @@ const entries = [
       ['pill-yellow', 'Docker'],
     ],
     photos: [
-      { src: '/experience/makerspace/photo1.svg', alt: 'MakerSpace internship workspace' },
+      { src: '/experience/makerspace/makerspace1.png', alt: 'Main Admin Dashboard' },
+      { src: '/experience/makerspace/makerspace2.png', alt: 'Marketing Intelligence Page' },
+      { src: '/experience/makerspace/makerspace3.png', alt: 'Competitor Analysis AI Agent' },
+      { src: '/experience/makerspace/makerspace4.png', alt: 'Business Auditor AI Agent' },
+      { src: '/experience/makerspace/makerspace5.png', alt: 'Main Chat Assistant Agent' },
     ],
+    photoLayout: 'natural',
+    lightbox: true,
   },
   {
     when: 'Aug 2025 — Present',
@@ -56,16 +62,13 @@ const entries = [
       ['pill-blue', 'UI/UX'],
       ['pill-yellow', 'Accessibility'],
     ],
-    photos: [
-      { src: '/experience/carecrate/photo1.svg', alt: 'CareCrate medicine box demonstration' },
-    ],
   },
   {
     when: 'Aug 2024 — Present',
     role: 'Staff Writer',
     org: 'SCHEMA SLU · Official Publication of SAMCIS',
     points: [
-      'Authored articles on technology trends and campus life for SAMCIS students.',
+      'Authored articles and digests on trends and campus life for SAMCIS students.',
       'Partnered with the design team to keep written content and visual layouts synchronized for maximum reader engagement.',
     ],
     tags: [
@@ -87,10 +90,50 @@ const chevron = (
   </svg>
 )
 
+const closeIcon = (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const arrowLeft = (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const arrowRight = (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 export default function Experience() {
   const [expanded, setExpanded] = useState(null)
+  const [lightbox, setLightbox] = useState(null)
 
   const toggle = (i) => setExpanded(expanded === i ? null : i)
+
+  useEffect(() => {
+    if (!lightbox) return
+    const step = (dir) =>
+      setLightbox((lb) => ({
+        ...lb,
+        index: (lb.index + dir + lb.list.length) % lb.list.length,
+      }))
+    const onKey = (e) => {
+      if (e.key === 'Escape') setLightbox(null)
+      if (e.key === 'ArrowRight') step(1)
+      if (e.key === 'ArrowLeft') step(-1)
+    }
+    document.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [lightbox])
 
   return (
     <section className="section" id="experience">
@@ -118,7 +161,7 @@ export default function Experience() {
                     <span key={label} className={`pill ${color}`}>{label}</span>
                   ))}
                 </div>
-                {e.photos.length > 0 && (
+                {e.photos?.length > 0 && (
                   <>
                     <button
                       className="entry-photos-btn"
@@ -133,13 +176,23 @@ export default function Experience() {
                     </button>
                     <div id={`exp-photos-${i}`} className={`stat-expand ${expanded === i ? 'is-expanded' : ''}`}>
                       <div className="stat-expand-inner">
-                        <div className="exp-photos">
+                        <div className={`exp-photos${e.photoLayout === 'natural' ? ' exp-photos--natural' : ''}`}>
                           {e.photos.map((photo, j) => (
                             <figure
                               key={j}
                               className={`exp-photo${e.photos.length > 1 && e.photos.length % 2 === 1 && j === e.photos.length - 1 ? ' span2' : ''}`}
                             >
-                              <img src={photo.src} alt={photo.alt} loading="lazy" />
+                              {e.lightbox ? (
+                                <button
+                                  className="exp-photo-btn"
+                                  onClick={() => setLightbox({ list: e.photos, index: j })}
+                                  aria-label={`View ${photo.alt} full size`}
+                                >
+                                  <img src={photo.src} alt={photo.alt} loading="lazy" />
+                                </button>
+                              ) : (
+                                <img src={photo.src} alt={photo.alt} loading="lazy" />
+                              )}
                             </figure>
                           ))}
                         </div>
@@ -152,6 +205,64 @@ export default function Experience() {
           ))}
         </div>
       </div>
+      {lightbox && (
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightbox.list[lightbox.index].alt}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setLightbox(null)
+          }}
+        >
+          <button
+            className="lightbox-btn lightbox-close"
+            onClick={() => setLightbox(null)}
+            aria-label="Close image"
+          >
+            {closeIcon}
+          </button>
+          {lightbox.list.length > 1 && (
+            <>
+              <button
+                className="lightbox-btn lightbox-prev"
+                onClick={() =>
+                  setLightbox({
+                    ...lightbox,
+                    index: (lightbox.index - 1 + lightbox.list.length) % lightbox.list.length,
+                  })
+                }
+                aria-label="Previous image"
+              >
+                {arrowLeft}
+              </button>
+              <button
+                className="lightbox-btn lightbox-next"
+                onClick={() =>
+                  setLightbox({
+                    ...lightbox,
+                    index: (lightbox.index + 1) % lightbox.list.length,
+                  })
+                }
+                aria-label="Next image"
+              >
+                {arrowRight}
+              </button>
+            </>
+          )}
+          <figure className="lightbox-frame">
+            <img
+              className="lightbox-img"
+              src={lightbox.list[lightbox.index].src}
+              alt={lightbox.list[lightbox.index].alt}
+            />
+            <figcaption className="lightbox-caption">
+              <span>{lightbox.list[lightbox.index].alt}</span>
+              <span>{lightbox.index + 1} / {lightbox.list.length}</span>
+            </figcaption>
+          </figure>
+        </div>
+      )}
     </section>
   )
 }
